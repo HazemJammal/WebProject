@@ -50,6 +50,15 @@ export class ReviewRepository extends Repository<Review> {
     return reviews.length ? total / reviews.length : 0;
   }
 
+  async getAverageRatingForBook(bookId: number): Promise<number> {
+    const reviews = await this.find({
+      where: { book: { id: bookId } },
+      relations: ['book'],
+    });
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return reviews.length ? total / reviews.length : 0;
+  }
+
     async deleteReviewsByBookId(bookId: number): Promise<void> {
     await this.delete({ book: { id: bookId } }); // Delete reviews related to the book
   }

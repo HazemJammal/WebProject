@@ -1,5 +1,5 @@
 // review.controller.ts
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, NotFoundException } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { ReviewPresenter } from './review.presenter';
 import { CreateReviewDto } from './review.dto';
@@ -31,6 +31,14 @@ export class ReviewController {
     await this.reviewService.deleteReviewsByBookId(bookId);
   }
 
+  @Get('book/:bookId/average-rating')
+  async getAverageRatingForBook(@Param('bookId') bookId: number) {
+    const averageRating = await this.reviewService.getAverageRatingForBook(bookId);
+    if (averageRating === 0) {
+      throw new NotFoundException(`No ratings found for book ID ${bookId}`);
+    }
+    return { averageRating };
+  }
 
 
 }
