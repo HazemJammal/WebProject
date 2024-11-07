@@ -10,10 +10,11 @@ import { AuthorRepository } from 'src/author/author.repository';
 
 @Module({
   imports: [
-    DatabaseModule, // Import the DatabaseModule to connect to the database
-    TypeOrmModule.forFeature([Book, Author]), // Register repositories for Book and Author
+    DatabaseModule,
+    TypeOrmModule.forFeature([Book, Author]),
   ],
-  providers: [BookService,BookRepository,AuthorRepository],
+  providers: [BookService, BookRepository, AuthorRepository],
   controllers: [BookController],
+  exports: [BookRepository], // Export BookRepository to be used in other modules
 })
 export class BookModule {}
