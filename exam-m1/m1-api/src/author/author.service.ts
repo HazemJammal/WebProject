@@ -54,4 +54,8 @@ export class AuthorService {
     // Handle deletion of author and update their books
     await this.authorRepository.deleteAuthorAndUpdateBooks(id);
   }
+
+  async getAuthorsWithStatistics() {
+    return this.authorRepository.findAllWithStatistics();
+  }
 }

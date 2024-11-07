@@ -3,5 +3,13 @@ export interface Author {
   firstname: string;
   lastname: string;
   photo: string;
-  biography: string;
+  bookCount: number;
+  averageRating: number;
+}
+
+export interface AddAuthor {
+    firstname: string;
+    lastname: string;
+    photo: string;
+    biography: string;
 }

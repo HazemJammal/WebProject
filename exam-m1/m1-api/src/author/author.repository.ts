@@ -46,4 +46,34 @@ export class AuthorRepository extends Repository<Author> {
     // Delete the author
     await this.delete(authorId);
   }
+
+  async findAllWithStatistics(): Promise<Array<{ id: number; firstname: string; lastname: string; photo: string; bookCount: number; averageRating: number }>> {
+    // Fetch authors with their books and reviews
+    const authors = await this.find({ relations: ['books', 'books.reviews'] });
+  
+    // Map through authors and calculate statistics
+    return authors.map((author) => {
+      const bookCount = author.books.length;
+  
+      // Collect all reviews across books
+      const totalReviews = author.books.flatMap((book) => book.reviews);
+  
+      // Calculate total rating sum from all reviews
+      const totalRating = totalReviews.reduce((sum, review) => sum + review.rating, 0);
+  
+      // Calculate average rating, default to 0 if no reviews
+      const averageRating = totalReviews.length ? totalRating / totalReviews.length : 0;
+  
+      // Return the calculated statistics along with basic author info
+      return {
+        id: author.id,
+        firstname: author.firstname,
+        lastname: author.lastname,
+        photo: author.photo,
+        bookCount,
+        averageRating,
+      };
+    });
+  }
+  
 }

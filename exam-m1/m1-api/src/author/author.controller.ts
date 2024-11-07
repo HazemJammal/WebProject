@@ -14,7 +14,10 @@ export class AuthorController {
     return new AuthorPresenter(newAuthor);
   }
   // Get all authors
-  
+  @Get('statistics')
+  async findAllWithStatistics() {
+    return await this.authorService.getAuthorsWithStatistics();
+  }
   @Get()
   async getAllAuthors(): Promise<AuthorPresenter[]> {
     const authors = await this.authorService.getAllAuthors();
