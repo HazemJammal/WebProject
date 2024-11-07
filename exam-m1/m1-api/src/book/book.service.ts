@@ -17,17 +17,17 @@ export class BookService {
   // Create a new book
   async createBook(createBookDto: CreateBookDto): Promise<Book> {
     const { title, price, publishYear, authorId } = createBookDto;
-
+  
     // Check if the author exists
     const author = await this.authorRepository.findAuthorById(authorId);
     if (!author) {
       throw new NotFoundException(`Author with ID ${authorId} not found`);
     }
-
+  
     // Delegate to repository for database operation
     return this.bookRepository.createAndSaveBook(title, price, publishYear, author);
   }
-
+  
   // Find a book by ID
   async getBookById(id: number): Promise<Book> {
     const book = await this.bookRepository.findBookById(id);

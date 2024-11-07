@@ -1,11 +1,12 @@
 import React from 'react';
+import { XIcon } from '@heroicons/react/solid';
 
 interface ModalProps {
   closeModal: () => void;
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ closeModal, children }) => {
+const AddBookModal: React.FC<ModalProps> = ({ closeModal, children }) => {
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
@@ -24,4 +25,4 @@ const Modal: React.FC<ModalProps> = ({ closeModal, children }) => {
   );
 };
 
-export default Modal;
+export default AddBookModal;

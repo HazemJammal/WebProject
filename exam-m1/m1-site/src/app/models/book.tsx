@@ -1,10 +1,15 @@
-import { Author } from "./author";
 
 export interface Book {
     id: number;
     title: string;
     price: number;
     publishYear: number;
-    author: Author;
     authorName: string;
+  }
+
+  export interface AddBook{
+    title: string;
+    price: number;
+    publishYear: number;
+    authorId: number;
   }

@@ -12,7 +12,8 @@ export class BookPresenter {
         title: book.title,
         price: book.price,
         publishYear: book.publishYear,
-        authorName: book.author ? book.author.firstname + " " +book.author.lastname : null,  // assuming the Book entity has an Author relation
+        authorName: book.author ? book.author.firstname + " " +book.author.lastname : null,
+        authorId:book.author.id  // assuming the Book entity has an Author relation
       };
     }
   

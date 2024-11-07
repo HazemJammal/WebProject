@@ -1,105 +1,74 @@
-'use client';
-
+// BookForm.tsx
 import React, { useState } from 'react';
+import AuthorSelect from './AuthorSelect';
+import { AuthorProvider } from '../providers/AuthorProvider';
 
 interface BookFormProps {
   closeModal: () => void;
-  addBook: (newBookData: { title: string; price: number; publishYear: number; authorName: string }) => void;
+  addBook: (newBookData: { title: string; price: number; publishYear: number; authorId: number }) => void;
 }
 
 const BookForm: React.FC<BookFormProps> = ({ closeModal, addBook }) => {
-  const [newBook, setNewBook] = useState<{
-    title: string;
-    price: number;
-    publishYear: number;
-    authorName: string;
-  }>({
-    title: '',
-    price: 0,
-    publishYear: 0,
-    authorName: '',
-  });
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState(0);
+  const [publishYear, setPublishYear] = useState(0);
+  const [authorId, setAuthorId] = useState(0);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewBook((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addBook(newBook); // Add the new book
-    closeModal(); // Close the modal after form submission
+    addBook({ title, price, publishYear, authorId });
+    closeModal();
   };
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700" htmlFor="title">
-          Title
-        </label>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Form fields for title, price, publish year, and author selection */}
+      <div>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Book Title</label>
+
         <input
           type="text"
-          id="title"
-          name="title"
-          value={newBook.title}
-          onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Book Title"
           required
+          
+          className="w-full p-2 border border-gray-300 rounded-md"
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700" htmlFor="price">
-          Price
-        </label>
-        <input
-          type="number"
-          id="price"
-          name="price"
-          value={newBook.price}
-          onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700" htmlFor="publishYear">
-          Publish Year
-        </label>
-        <input
-          type="number"
-          id="publishYear"
-          name="publishYear"
-          value={newBook.publishYear}
-          onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700" htmlFor="authorName">
-          Author Name
-        </label>
+      <div>
+        <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+
         <input
           type="text"
-          id="authorName"
-          name="authorName"
-          value={newBook.authorName}
-          onChange={handleInputChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+          placeholder="Price"
           required
+          pattern="\d*" // only allows digits
+          inputMode="numeric" // ensures numeric keyboard for mobile
+          min="1"
+          className="w- full p-2 border border-gray-300 rounded-md"
         />
       </div>
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
-        >
-          Add Book
-        </button>
+      <div>
+        <label htmlFor="publishYear" className="block text-sm font-medium text-gray-700">Publish Year</label>
+        <input
+          type="text"
+          value={publishYear}
+          onChange={(e) => setPublishYear(Number(e.target.value))}
+          placeholder="Publish Year"
+          required
+          pattern="\d*" // only allows digits
+          inputMode="numeric" // ensures numeric keyboard for mobile
+          min={1}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
       </div>
+      <AuthorProvider>
+        <AuthorSelect value={authorId} onChange={(e) => setAuthorId(Number(e.target.value))} required />
+      </AuthorProvider>
+      <button type="submit" className="bg-green-600 text-white p-2 rounded">Add Book</button>
     </form>
   );
 };

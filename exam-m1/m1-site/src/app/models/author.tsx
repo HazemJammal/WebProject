@@ -1,4 +1,7 @@
 export interface Author {
-    firstname: string;
-    lastname: string;
-  }
+  id: number;
+  firstname: string;
+  lastname: string;
+  photo: string;
+  biography: string;
+}
