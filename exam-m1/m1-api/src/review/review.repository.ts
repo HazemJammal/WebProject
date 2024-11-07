@@ -33,6 +33,13 @@ export class ReviewRepository extends Repository<Review> {
     return await this.find({ relations: ['book', 'author'] });
   }
 
+  async findReviewsByBookId(bookId: number): Promise<Review[]> {
+    return await this.find({
+      where: { book: { id: bookId } },
+      relations: ['book', 'author'],
+    });
+  }
+
   // Calculate the average rating for an author
   async getAverageRatingForAuthor(authorId: number): Promise<number> {
     const reviews = await this.find({
@@ -41,5 +48,9 @@ export class ReviewRepository extends Repository<Review> {
     });
     const total = reviews.reduce((sum, review) => sum + review.rating, 0);
     return reviews.length ? total / reviews.length : 0;
+  }
+
+    async deleteReviewsByBookId(bookId: number): Promise<void> {
+    await this.delete({ book: { id: bookId } }); // Delete reviews related to the book
   }
 }

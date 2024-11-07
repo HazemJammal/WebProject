@@ -1,5 +1,5 @@
 // review.controller.ts
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { ReviewPresenter } from './review.presenter';
 import { CreateReviewDto } from './review.dto';
@@ -25,4 +25,12 @@ export class ReviewController {
     const averageRating = await this.reviewService.getAverageRatingForAuthor(Number(authorId));
     return { averageRating };
   }
+
+  @Delete(':id')
+  async deleteReviews(@Param('id') bookId: number): Promise<void> {
+    await this.reviewService.deleteReviewsByBookId(bookId);
+  }
+
+
+
 }

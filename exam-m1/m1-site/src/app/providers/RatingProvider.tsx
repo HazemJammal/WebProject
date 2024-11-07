@@ -37,6 +37,7 @@ export const ReviewProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       const response = await axios.post('http://localhost:3001/reviews', review);
       // Optionally, update the reviews state by adding the new review to the list
       setReviews((prevReviews) => [...prevReviews, response.data]);
+      console.log("adding review ???")
     } catch (error) {
       console.error('Error adding review:', error);
     }

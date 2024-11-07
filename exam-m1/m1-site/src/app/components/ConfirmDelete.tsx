@@ -6,7 +6,7 @@ interface ModalProps {
   onCancel: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ message, onConfirm, onCancel }) => {
+const ConfirmDeleteModal: React.FC<ModalProps> = ({ message, onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
@@ -30,4 +30,4 @@ const Modal: React.FC<ModalProps> = ({ message, onConfirm, onCancel }) => {
   );
 };
 
-export default Modal;
+export default ConfirmDeleteModal;

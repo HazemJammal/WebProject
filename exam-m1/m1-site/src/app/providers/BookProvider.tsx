@@ -61,10 +61,16 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
   // Delete a book by ID
   const deleteBook = async (id: number) => {
     try {
+      // First, delete the reviews associated with the book
+      await axios.delete(`http://localhost:3001/reviews/${id}`);
+      
+      // Then, delete the book itself
       await axios.delete(`http://localhost:3001/books/${id}`);
+      
+      // Update the state to remove the book from the list
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
     } catch (error) {
-      console.error('Error deleting book:', error);
+      console.error('Error deleting book and its reviews:', error);
     }
   };
 

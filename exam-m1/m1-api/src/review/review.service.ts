@@ -45,7 +45,15 @@ export class ReviewService {
     return await this.reviewRepository.findAllReviews();
   }
 
+  
+  async getReviewsByBookId(bookId: number): Promise<Review[]> {
+    return await this.reviewRepository.findReviewsByBookId(bookId);
+  }
   async getAverageRatingForAuthor(authorId: number): Promise<number> {
     return await this.reviewRepository.getAverageRatingForAuthor(authorId);
+  }
+
+    async deleteReviewsByBookId(bookId: number): Promise<void> {
+    await this.reviewRepository.deleteReviewsByBookId(bookId);
   }
 }
