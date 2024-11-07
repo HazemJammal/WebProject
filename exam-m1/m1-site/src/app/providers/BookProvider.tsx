@@ -3,7 +3,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
-import { AddBook, Book } from '../models/book';
+import { AddBook, Book, BookDetailModel } from '../models/book';
 
 interface BookProviderProps {
   children: ReactNode;
@@ -15,6 +15,8 @@ interface BookContextType {
   updateBook: (id: number, updatedBookData: Partial<Book>) => Promise<void>;
   deleteBook: (id: number) => Promise<void>;
   fetchBooks: () => Promise<void>;
+  getBookById: (id: number) => Promise<BookDetailModel | null>;  // New method to get a single book
+
 }
 
 const BookContext = createContext<BookContextType | undefined>(undefined);
@@ -31,6 +33,8 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
       console.error('Error fetching books:', error);
     }
   };
+
+  
 
   // Add a new book
   const addBook = async (newBookData: AddBook) => {
@@ -64,12 +68,22 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
     }
   };
 
+  const getBookById = async (id: number): Promise<BookDetailModel | null> => {
+    try {
+      const response = await axios.get(`http://localhost:3001/books/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching book by ID:', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     fetchBooks();
   }, []);
 
   return (
-    <BookContext.Provider value={{ books, addBook, updateBook, deleteBook, fetchBooks }}>
+    <BookContext.Provider value={{ books, addBook, updateBook, deleteBook, fetchBooks,getBookById }}>
       {children}
     </BookContext.Provider>
   );

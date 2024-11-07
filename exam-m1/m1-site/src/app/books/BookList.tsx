@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import BookCard from '../components/BookCard';
 import { Book } from '../models/book';
@@ -32,7 +33,6 @@ const BookList: React.FC<BookListProps> = ({ books, addBook }) => {
         return books.sort((a, b) => a.price - b.price);
       case 'priceDesc':
         return books.sort((a, b) => b.price - a.price);
-
       default:
         return books;
     }
@@ -43,22 +43,23 @@ const BookList: React.FC<BookListProps> = ({ books, addBook }) => {
 
   return (
     <div className="space-y-4">
-      {/* Search Bar and Sorting Dropdown side by side */}
-      <div className="flex justify-between mb-4">
-        {/* Search Bar */}
+      {/* Search Bar */}
+      <div className="flex justify-center mb-4">
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search books by name"
-          className="p-2 border border-gray-300 rounded-md w-3/4"
+          className="p-2 border border-gray-300 rounded-md w-1/2"
         />
+      </div>
 
-        {/* Sorting Dropdown */}
+      {/* Sorting Dropdown */}
+      <div className="flex justify-center mb-4">
         <select
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md ml-4 w-1/4 md:w-1/4"
+          className="p-2 border border-gray-300 rounded-md"
         >
           <option value="nameAsc">Sort by Name (A-Z)</option>
           <option value="nameDesc">Sort by Name (Z-A)</option>
@@ -73,9 +74,10 @@ const BookList: React.FC<BookListProps> = ({ books, addBook }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedBooks.length > 0 ? (
           sortedBooks.map((book) => (
+            
             <Link href={`/books/${book.id}`} key={book.id}>
-            <BookCard key={book.id} book={book} />
-            </Link> 
+                <BookCard book={book} />
+            </Link>
           ))
         ) : (
           <div>No books found</div>
@@ -92,6 +94,5 @@ const BookList: React.FC<BookListProps> = ({ books, addBook }) => {
     </div>
   );
 };
-
 
 export default BookList;

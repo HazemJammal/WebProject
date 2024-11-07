@@ -13,3 +13,7 @@ export interface Book {
     publishYear: number;
     authorId: number;
   }
+
+  export interface BookDetailModel extends Book {
+    authorId: number;
+  }

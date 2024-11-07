@@ -1,6 +1,7 @@
 // app/layout.tsx
 import Link from 'next/link';
 import './App.css';
+import { BookProvider } from './providers/BookProvider';
 
 export const metadata = {
   title: 'Next.js App',
@@ -28,7 +29,11 @@ export default function RootLayout({
             </li>
           </ul>
         </nav>
-        <main className="p-6">{children}</main>
+        <main className="p-6">
+          <BookProvider>
+          {children}
+          </BookProvider>
+          </main>
       </body>
     </html>
   );
