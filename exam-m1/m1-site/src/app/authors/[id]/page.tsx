@@ -83,12 +83,23 @@ const AuthorDetail: React.FC = () => {
       </div>
 
       <div className="flex space-x-4 mt-4">
-        <button onClick={() => setEditModalOpen(true)} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-          Edit Author
-        </button>
-        <button onClick={() => setDeleteModalOpen(true)} className="px-4 py-2 bg-red-500 text-white rounded-md">
-          Delete Author
-        </button>
+        {author.id !== 2 && (
+          <>
+            <button
+              onClick={() => setEditModalOpen(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md"
+            >
+              Edit Author
+            </button>
+            <button
+              onClick={() => setDeleteModalOpen(true)}
+              className="px-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Delete Author
+            </button>
+          </>
+        )}
+
 
         <EditAuthorModal
           author={author}
