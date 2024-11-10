@@ -8,9 +8,11 @@
 # testing
 /coverage
 
+.next/
 # production
 /build
 
+.next/
 # misc
 .DS_Store
 .env.local
