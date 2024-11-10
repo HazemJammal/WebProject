@@ -32,7 +32,7 @@ export class AuthorRepository extends Repository<Author> {
     const author = await this.findOne({ where: { id: authorId }, relations: ['books'] });
 
     // Get the default author (id = -1)
-    const defaultAuthor = await this.findOne({ where: { id: -1 } });
+    const defaultAuthor = await this.findOne({ where: { id: 2 } });
 
     if (!defaultAuthor) {
       throw new Error('Default author with ID -1 not found');

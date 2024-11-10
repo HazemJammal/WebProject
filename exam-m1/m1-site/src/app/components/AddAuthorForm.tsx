@@ -10,20 +10,10 @@ interface AuthorFormProps {
 const AuthorForm: React.FC<AuthorFormProps> = ({ closeModal, addAuthor }) => {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
-  const [photo, setPhoto] = useState<File | null>(null);
+  const [photo, setPhoto] = useState('');
   const [biography, setBiography] = useState('');
 
   // Handle photo file change
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      if (file.type === 'image/jpeg' || file.type === 'image/png') {
-        setPhoto(file);
-      } else {
-        alert('Please upload a .jpg or .png image');
-      }
-    }
-  };
 
   // Handle form submit
   const handleSubmit = () => {
@@ -31,7 +21,7 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ closeModal, addAuthor }) => {
       const newAuthor = {
         firstname,
         lastname,
-        photo: URL.createObjectURL(photo), // Temporary URL for preview
+        photo, // Temporary URL for preview
         biography,
       };
       addAuthor(newAuthor);
@@ -55,15 +45,12 @@ const AuthorForm: React.FC<AuthorFormProps> = ({ closeModal, addAuthor }) => {
         value={lastname}
         onChange={(e) => setLastname(e.target.value)}
       />
-      <div>
-        <input
-          type="file"
-          accept=".jpg,.png"
-          onChange={handlePhotoChange}
-          className="p-2 border border-gray-300 rounded-md"
-        />
-        {photo && <p className="text-sm text-gray-500">Selected photo: {photo.name}</p>}
-      </div>
+      <TextField
+        label="Photo url"
+        fullWidth
+        value={photo}
+        onChange={(e) => setPhoto(e.target.value)}
+      />
       <TextField
         label="Biography"
         fullWidth

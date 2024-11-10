@@ -15,6 +15,7 @@ interface AuthorContextType {
   getBooksByAuthorId: (authorId: number) => Promise<Book[]>;  // New method to get books by author
   updateAuthor: (authorData: Author) => Promise<void>;
   getAuthorsStats: () => Promise<AuthorStats[]>;
+  deleteAuthor: (id: number) => Promise<void>;
 }
 
 const AuthorContext = createContext<AuthorContextType | undefined>(undefined);
@@ -39,6 +40,15 @@ export const AuthorProvider = ({ children }: { children: ReactNode }) => {
       console.error('Error adding author:', error);
     }
   };
+
+  const deleteAuthor = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:3001/authors/${id}`);
+      setAuthors((prevAuthors) => prevAuthors.filter((author) => author.id !== id));
+    } catch (error) {
+      console.error('Error deleting author:', error);
+    }
+  }
 
   const getAuthorsStats = async (): Promise<AuthorStats[]> => {
     try {
@@ -89,7 +99,7 @@ export const AuthorProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthorContext.Provider value={{ authors, getAuthorsStats,addAuthor, refreshAuthors, getAuthorById, getBooksByAuthorId,updateAuthor }}>
+    <AuthorContext.Provider value={{ authors, deleteAuthor,getAuthorsStats,addAuthor, refreshAuthors, getAuthorById, getBooksByAuthorId,updateAuthor }}>
       {children}
     </AuthorContext.Provider>
   );

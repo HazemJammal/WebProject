@@ -1,36 +1,41 @@
+// AuthorDetail.tsx
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation'; // Import useRouter for redirection after deletion
+import axios from 'axios';
 import { useAuthors } from '../../providers/AuthorProvider';
 import { Author } from '../../models/author';
 import { Book } from '../../models/book';
 import EditAuthorModal from '../../components/EditAuthorModal';
 import AddBookModal from '../../components/AddBookModal';
-import BookForm from '../../components/BookForm'; // Import BookForm
+import BookForm from '../../components/BookForm';
 import { useBooks } from '../../providers/BookProvider';
+import ConfirmDeleteModal from '../../components/ConfirmDelete';
 
 const AuthorDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { getAuthorById, getBooksByAuthorId } = useAuthors();
-  const {addBook} = useBooks(); // Import useBooks hook
+  const router = useRouter(); // Use for navigation after deletion
+  const { getAuthorById, getBooksByAuthorId, deleteAuthor } = useAuthors(); // Import deleteAuthor
+  const { addBook } = useBooks();
   const [author, setAuthor] = useState<Author | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [isAddBookModalOpen, setAddBookModalOpen] = useState(false); // State for Add Book Modal
+  const [isAddBookModalOpen, setAddBookModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchAuthorDetails = async () => {
       if (id) {
         setLoading(true);
         try {
-          // Fetch author details
           const fetchedAuthor = await getAuthorById(Number(id));
           if (fetchedAuthor) {
             setAuthor(fetchedAuthor);
-            // Fetch books by this author
             const fetchedBooks = await getBooksByAuthorId(Number(id));
             setBooks(fetchedBooks);
           } else {
@@ -48,12 +53,18 @@ const AuthorDetail: React.FC = () => {
 
   const handleAddBook = async (newBookData: { title: string; price: number; publishYear: number; authorId: number }) => {
     await addBook(newBookData);
-    setAddBookModalOpen(false); // Close the modal after adding the book
-    const fetchedBooks = await getBooksByAuthorId(Number(id)); // Refresh books list
+    setAddBookModalOpen(false);
+    const fetchedBooks = await getBooksByAuthorId(Number(id));
     setBooks(fetchedBooks);
   };
 
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const confirmDeleteAuthor = async () => {
+    if (author) {
+      await deleteAuthor(author.id);
+      setDeleteModalOpen(false);
+      router.push('/authors'); // Redirect to the authors list page
+    }
+  };
 
   if (loading) return <div className="flex justify-center items-center h-full">Loading...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
@@ -71,21 +82,19 @@ const AuthorDetail: React.FC = () => {
         <p className="text-lg text-gray-600 text-center">{author.biography}</p>
       </div>
 
-      <div>
-        {/* Edit Author Button */}
-        <button onClick={() => setEditModalOpen(true)} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+      <div className="flex space-x-4 mt-4">
+        <button onClick={() => setEditModalOpen(true)} className="px-4 py-2 bg-blue-500 text-white rounded-md">
           Edit Author
         </button>
+        <button onClick={() => setDeleteModalOpen(true)} className="px-4 py-2 bg-red-500 text-white rounded-md">
+          Delete Author
+        </button>
 
-        {/* Edit Author Modal */}
         <EditAuthorModal
           author={author}
           isOpen={isEditModalOpen}
           onClose={() => setEditModalOpen(false)}
-          onConfirm={() => {
-            setEditModalOpen(false);
-            // Refresh author details if needed
-          }}
+          onConfirm={() => setEditModalOpen(false)}
         />
       </div>
 
@@ -107,7 +116,6 @@ const AuthorDetail: React.FC = () => {
         )}
       </div>
 
-      {/* Add Book Button */}
       <button
         onClick={() => setAddBookModalOpen(true)}
         className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md"
@@ -115,15 +123,22 @@ const AuthorDetail: React.FC = () => {
         Add Book
       </button>
 
-      {/* Add Book Modal */}
       {isAddBookModalOpen && (
         <AddBookModal closeModal={() => setAddBookModalOpen(false)}>
           <BookForm
             closeModal={() => setAddBookModalOpen(false)}
             addBook={handleAddBook}
-            authorId={Number(id)} // Pass the authorId to the BookForm
+            authorId={Number(id)}
           />
         </AddBookModal>
+      )}
+
+      {isDeleteModalOpen && (
+        <ConfirmDeleteModal
+          message="Are you sure you want to delete this author? This action cannot be undone."
+          onConfirm={confirmDeleteAuthor}
+          onCancel={() => setDeleteModalOpen(false)}
+        />
       )}
     </div>
   );
