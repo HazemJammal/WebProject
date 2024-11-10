@@ -1,21 +1,25 @@
-// app/authors/[id]/page.tsx
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuthors } from '../../providers/AuthorProvider';
-import { Author} from '../../models/author';
+import { Author } from '../../models/author';
 import { Book } from '../../models/book';
 import EditAuthorModal from '../../components/EditAuthorModal';
+import AddBookModal from '../../components/AddBookModal';
+import BookForm from '../../components/BookForm'; // Import BookForm
+import { useBooks } from '../../providers/BookProvider';
 
 const AuthorDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { getAuthorById, getBooksByAuthorId } = useAuthors();
+  const {addBook} = useBooks(); // Import useBooks hook
   const [author, setAuthor] = useState<Author | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [isAddBookModalOpen, setAddBookModalOpen] = useState(false); // State for Add Book Modal
 
   useEffect(() => {
     const fetchAuthorDetails = async () => {
@@ -41,7 +45,16 @@ const AuthorDetail: React.FC = () => {
 
     fetchAuthorDetails();
   }, [id, getAuthorById, getBooksByAuthorId]);
+
+  const handleAddBook = async (newBookData: { title: string; price: number; publishYear: number; authorId: number }) => {
+    await addBook(newBookData);
+    setAddBookModalOpen(false); // Close the modal after adding the book
+    const fetchedBooks = await getBooksByAuthorId(Number(id)); // Refresh books list
+    setBooks(fetchedBooks);
+  };
+
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+
   if (loading) return <div className="flex justify-center items-center h-full">Loading...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
   if (!author) return <div>Author not found</div>;
@@ -57,23 +70,25 @@ const AuthorDetail: React.FC = () => {
         <h1 className="text-3xl font-semibold text-gray-800">{author.firstname} {author.lastname}</h1>
         <p className="text-lg text-gray-600 text-center">{author.biography}</p>
       </div>
-      <div>
-      {/* Existing author detail display code */}
-      <button onClick={() => setEditModalOpen(true)} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md">
-        Edit Author
-      </button>
 
-      {/* Edit Author Modal */}
-      <EditAuthorModal
-        author={author}
-        isOpen={isEditModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        onConfirm={() => {
-          setEditModalOpen(false);
-          // Refresh author details here if needed
-        }}
-      />
-    </div>
+      <div>
+        {/* Edit Author Button */}
+        <button onClick={() => setEditModalOpen(true)} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+          Edit Author
+        </button>
+
+        {/* Edit Author Modal */}
+        <EditAuthorModal
+          author={author}
+          isOpen={isEditModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          onConfirm={() => {
+            setEditModalOpen(false);
+            // Refresh author details if needed
+          }}
+        />
+      </div>
+
       <div className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-800">Books by {author.firstname} {author.lastname}</h2>
         {books.length > 0 ? (
@@ -91,6 +106,25 @@ const AuthorDetail: React.FC = () => {
           <p className="mt-4 text-gray-600">No books found for this author.</p>
         )}
       </div>
+
+      {/* Add Book Button */}
+      <button
+        onClick={() => setAddBookModalOpen(true)}
+        className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md"
+      >
+        Add Book
+      </button>
+
+      {/* Add Book Modal */}
+      {isAddBookModalOpen && (
+        <AddBookModal closeModal={() => setAddBookModalOpen(false)}>
+          <BookForm
+            closeModal={() => setAddBookModalOpen(false)}
+            addBook={handleAddBook}
+            authorId={Number(id)} // Pass the authorId to the BookForm
+          />
+        </AddBookModal>
+      )}
     </div>
   );
 };
