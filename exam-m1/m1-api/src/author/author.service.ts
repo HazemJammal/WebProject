@@ -3,7 +3,7 @@ import { AuthorRepository } from './author.repository';
 import { BookRepository } from 'src/book/book.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from 'src/modules/database/entities/author.entity';
-import { CreateAuthorDto, UpdateAuthorDto } from './author.dto';
+import { AuthorStats, CreateAuthorDto, UpdateAuthorDto } from './author.dto';
 
 @Injectable()
 export class AuthorService {
@@ -24,7 +24,9 @@ export class AuthorService {
   async getAllAuthors(): Promise<Author[]> {
     return await this.authorRepository.find();
   }
-
+  async getAuthorsWithStatistics() :Promise<AuthorStats[]> {
+    return this.authorRepository.findAllWithStatistics();
+  }
   // Get an author by ID
   async getAuthorById(id: number): Promise<Author> {
     const author = await this.authorRepository.findOne({ where: { id }, relations: ['books'] });
@@ -55,7 +57,5 @@ export class AuthorService {
     await this.authorRepository.deleteAuthorAndUpdateBooks(id);
   }
 
-  async getAuthorsWithStatistics() {
-    return this.authorRepository.findAllWithStatistics();
-  }
+
 }

@@ -41,6 +41,11 @@ export class BookController {
     return BookPresenter.present(updatedBook);  // Use the presenter to format the response
   }
 
+  @Get('author/:authorId')
+  async getAuthorBooks(@Param('authorId') authorId: number) {
+    const books = await this.bookService.getAuthorBooks(authorId);
+    return BookPresenter.presentMany(books);  // Use the presenter to format the response
+  }
   // Delete a book by ID
   @Delete(':id')
   async deleteBook(@Param('id') id: number) {

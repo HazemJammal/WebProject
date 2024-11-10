@@ -2,6 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Author } from 'src/modules/database/entities/author.entity';
 import { Injectable } from '@nestjs/common';
 import { BookRepository } from 'src/book/book.repository';
+import { AuthorStats } from './author.dto';
 
 
 @Injectable()
@@ -47,7 +48,7 @@ export class AuthorRepository extends Repository<Author> {
     await this.delete(authorId);
   }
 
-  async findAllWithStatistics(): Promise<Array<{ id: number; firstname: string; lastname: string; photo: string; bookCount: number; averageRating: number }>> {
+  async findAllWithStatistics(): Promise<Array<AuthorStats>> {
     // Fetch authors with their books and reviews
     const authors = await this.find({ relations: ['books', 'books.reviews'] });
   
@@ -65,14 +66,15 @@ export class AuthorRepository extends Repository<Author> {
       const averageRating = totalReviews.length ? totalRating / totalReviews.length : 0;
   
       // Return the calculated statistics along with basic author info
-      return {
-        id: author.id,
-        firstname: author.firstname,
-        lastname: author.lastname,
-        photo: author.photo,
+      return new AuthorStats(
+        author.id,
+        author.firstname,
+        author.lastname,
+        author.photo,
+        author.biography,
         bookCount,
-        averageRating,
-      };
+        averageRating
+      );
     });
   }
   

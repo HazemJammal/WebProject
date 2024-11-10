@@ -14,7 +14,7 @@ export class AuthorController {
     return new AuthorPresenter(newAuthor);
   }
   // Get all authors
-  @Get('statistics')
+  @Get('stats')
   async findAllWithStatistics() {
     return await this.authorService.getAuthorsWithStatistics();
   }

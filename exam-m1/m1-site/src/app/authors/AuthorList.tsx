@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import AuthorCard from '../components/AuthorCard';
 import { Author } from '../models/author';
+import Link from 'next/link';
 
 interface AuthorListProps {
   authors: Author[];
@@ -33,7 +34,9 @@ const AuthorList: React.FC<AuthorListProps> = ({ authors, addAuthor }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredAuthors.length > 0 ? (
           filteredAuthors.map((author) => (
+            <Link key={author.id} href={`/authors/${author.id}`}>
             <AuthorCard key={author.id} author={author} />
+            </Link>
           ))
         ) : (
           <div>No authors found</div>

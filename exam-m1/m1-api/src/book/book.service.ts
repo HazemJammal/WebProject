@@ -53,6 +53,11 @@ export class BookService {
     return this.bookRepository.updateBook(book, title, price, publishYear);
   }
 
+  async getAuthorBooks(authorId: number): Promise<Book[]> {
+    return this.bookRepository.find({ where: { author: { id: authorId } }, relations: ['author'] });
+  }
+  
+
   // Delete a book by ID
   async deleteBook(id: number): Promise<void> {
     // Ensure the book exists before deleting

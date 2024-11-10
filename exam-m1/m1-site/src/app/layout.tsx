@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import './App.css';
 import { BookProvider } from './providers/BookProvider';
+import { AuthorProvider } from './providers/AuthorProvider';
 
 export const metadata = {
   title: 'Next.js App',
@@ -30,9 +31,11 @@ export default function RootLayout({
           </ul>
         </nav>
         <main className="p-6">
+          <AuthorProvider>
           <BookProvider>
           {children}
           </BookProvider>
+          </AuthorProvider>
           </main>
       </body>
     </html>
